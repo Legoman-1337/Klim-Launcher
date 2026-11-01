@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' file: https: data:;" />
+  <title>Klim Launcher</title>
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/themes.css" />
+  <link rel="stylesheet" href="styles/animations.css" />
+</head>
+<body>
+  <!-- Фон: слои темы и пользовательского изображения -->
+  <div class="bg" id="bg">
+    <div class="bg-theme" id="bg-theme"></div>
+    <div class="bg-orbs"><i></i><i></i><i></i></div>
+    <canvas class="bg-particles" id="particles"></canvas>
+    <div class="bg-custom" id="bg-custom"></div>
+    <div class="bg-dim" id="bg-dim"></div>
+  </div>
+
+  <!-- Заголовок окна -->
+  <header class="titlebar" id="titlebar">
+    <div class="titlebar-logo">
+      <span class="logo-k">K</span><span class="logo-rest">LIM</span>
+      <span class="edition-badge" id="edition-badge"></span>
+    </div>
+    <div class="titlebar-buttons">
+      <button class="tb-btn" id="tb-min" title="Свернуть">&#x2500;</button>
+      <button class="tb-btn" id="tb-max" title="Развернуть">&#x25A1;</button>
+      <button class="tb-btn tb-close" id="tb-close" title="Закрыть">&#x2715;</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Левая панель запуска -->
+    <aside class="launch-panel glass anim-rise">
+      <div class="account-row">
+        <div class="avatar-wrap" id="avatar-wrap">
+          <img id="avatar" class="avatar" alt="" />
+          <span class="avatar-glow"></span>
+        </div>
+        <div class="account-controls">
+          <div class="combo" id="account-combo">
+            <button class="combo-toggle" id="account-toggle">
+              <span class="combo-icon">&#x1F464;</span>
+              <span class="combo-label" id="account-label">Ник</span>
+              <span class="caret"></span>
+            </button>
+            <div class="combo-menu" id="account-menu" hidden>
+              <div class="combo-list" id="account-list"></div>
+              <button class="combo-add" id="account-add">+ Добавить ник</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="version-combo combo" id="version-combo">
+        <button class="combo-toggle" id="mc-toggle">
+          <span class="combo-label" id="mc-label">1.20.1</span>
+          <span class="caret"></span>
+        </button>
+        <div class="combo-menu combo-menu-wide" id="mc-menu" hidden>
+          <input class="combo-search" id="mc-search" placeholder="Поиск версии…" />
+          <div class="combo-list" id="mc-list"></div>
+        </div>
+      </div>
+
+      <div class="version-combo combo" id="loader-combo">
+        <button class="combo-toggle" id="loader-toggle">
+          <span class="combo-label" id="loader-label">Без модификаций</span>
+          <span class="caret"></span>
+        </button>
+        <div class="combo-menu combo-menu-wide" id="loader-menu" hidden>
+          <div class="combo-list" id="loader-list"></div>
+        </div>
+      </div>
+
+      <label class="check-row"><input type="checkbox" id="chk-deferred" /><span>Отложенный запуск</span></label>
+      <label class="check-row"><input type="checkbox" id="chk-refresh" /><span>Обновить клиент</span></label>
+
+      <button class="play-btn" id="btn-play"><span>Запустить</span></button>
+
+      <div class="icon-row">
+        <button class="icon-btn" id="ib-info" title="О программе">&#8505;</button>
+        <button class="icon-btn" id="ib-folder" title="Открыть папку игры">&#128193;</button>
+        <button class="icon-btn" id="ib-mods" title="Открыть папку mods">&#128230;</button>
+        <button class="icon-btn" id="ib-refresh" title="Обновить список версий">&#10227;</button>
+        <button class="icon-btn" id="ib-menu" title="Меню">&#9776;</button>
+      </div>
+    </aside>
+
+    <!-- Правая часть: страницы -->
+    <section class="content" id="content">
+      <!-- Главная (карточки) -->
+      <div class="page page-play" id="page-play">
+        <h2 class="page-title">Добро пожаловать<span id="hello-nick"></span></h2>
+        <div class="cards" id="cards-home"></div>
+      </div>
+
+      <!-- Менеджер версий -->
+      <div class="page" id="page-versions" hidden>
+        <h2 class="page-title">Менеджер версий</h2>
+        <div class="filters glass">
+          <label class="check-row"><input type="checkbox" id="f-releases" checked /><span>Релизы</span></label>
+          <label class="check-row"><input type="checkbox" id="f-snapshots" checked /><span>Снапшоты</span></label>
+          <label class="check-row"><input type="checkbox" id="f-oldbeta" checked /><span>Бета (2010–2011)</span></label>
+          <label class="check-row"><input type="checkbox" id="f-oldalpha" /><span>Альфа (2010)</span></label>
+          <label class="check-row"><input type="checkbox" id="f-experimental" checked /><span>Экспериментальные</span></label>
+          <label class="check-row"><input type="checkbox" id="f-installed" /><span>Только установленные</span></label>
+        </div>
+        <input class="search-input glass" id="versions-search" placeholder="Поиск версии…" />
+        <div class="versions-list glass" id="versions-list"></div>
+      </div>
+
+      <!-- Настройки -->
+      <div class="page" id="page-settings" hidden>
+        <div class="tabs glass">
+          <button class="tab active" data-tab="mc">Minecraft</button>
+          <button class="tab" data-tab="launcher">Лаунчер</button>
+          <button class="tab" data-tab="java">Java / Память</button>
+          <button class="tab" data-tab="about">О программе</button>
+        </div>
+        <div class="tab-body glass" id="tab-body">
+          <div class="tab-page" id="tab-mc">
+            <div class="form-row">
+              <label>Папка игры:</label>
+              <div class="input-with-btn">
+                <input type="text" id="s-gameDir" class="text-input" />
+                <button class="mini-btn" id="s-gameDir-browse">Обзор…</button>
+                <button class="mini-btn" id="s-gameDir-open" title="Открыть">&#128193;</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Размер окна:</label>
+              <div class="input-with-btn">
+                <input type="number" id="s-winW" class="text-input num" min="640" max="3840" />
+                <span class="x-mark">&#215;</span>
+                <input type="number" id="s-winH" class="text-input num" min="480" max="2160" />
+              </div>
+            </div>
+            <label class="check-row"><input type="checkbox" id="s-fullscreen" /><span>Форсировать полноэкранный режим</span></label>
+            <div class="form-row">
+              <label>Видеокарта:</label>
+              <select id="s-gpu" class="text-input">
+                <option value="auto">Автоматически (как у системы)</option>
+                <option value="discrete">Использовать дискретную видеокарту</option>
+                <option value="integrated">Использовать встроенную видеокарту</option>
+              </select>
+            </div>
+            <label class="check-row"><input type="checkbox" id="s-subfolders" /><span>Отдельные подпапки по версиям (миры/моды/настройки)</span></label>
+            <label class="check-row"><input type="checkbox" id="s-closeafter" /><span>Закрывать лаунчер после запуска игры</span></label>
+          </div>
+
+          <div class="tab-page" id="tab-launcher" hidden>
+            <h3>Внешний вид</h3>
+            <p class="hint">Темы и фон настраиваются на странице «Внешний вид» (меню &#9776;).</p>
+            <h3>Поведение</h3>
+            <label class="check-row"><input type="checkbox" id="s-animations" /><span>Анимации интерфейса</span></label>
+            <h3>Конфигурация</h3>
+            <p class="hint" id="s-configpath"></p>
+            <button class="mini-btn" id="s-openconfig">Открыть папку с конфигом</button>
+          </div>
+
+          <div class="tab-page" id="tab-java" hidden>
+            <div class="form-row">
+              <label>Память (ОЗУ):</label>
+              <div class="mem-row">
+                <input type="range" id="s-mem" min="1024" max="16384" step="512" />
+                <input type="number" id="s-mem-num" class="text-input num" min="1024" max="16384" step="512" />
+                <span>МБ</span>
+                <label class="check-row"><input type="checkbox" id="s-mem-auto" /><span>Авто</span></label>
+              </div>
+            </div>
+            <p class="hint" id="mem-hint"></p>
+            <label class="check-row"><input type="checkbox" id="s-java-auto" /><span>Автоматически подбирать Java для версии игры</span></label>
+            <h3>Найденные Java</h3>
+            <div id="java-list" class="java-list"></div>
+            <div class="dl-java-row">
+              <span>Скачать Java:</span>
+              <button class="mini-btn" data-jre="8">8</button>
+              <button class="mini-btn" data-jre="17">17</button>
+              <button class="mini-btn" data-jre="21">21</button>
+            </div>
+          </div>
+
+          <div class="tab-page" id="tab-about" hidden>
+            <div class="about-logo"><span class="logo-k">K</span>LIM</div>
+            <p id="about-text"></p>
+            <p class="hint">Все версии Minecraft скачиваются с официальных серверов Mojang.<br/>
+            Fabric — meta.fabricmc.net, Forge — maven.minecraftforge.net.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Внешний вид -->
+      <div class="page" id="page-appearance" hidden>
+        <h2 class="page-title">Внешний вид</h2>
+        <div class="theme-grid" id="theme-grid"></div>
+        <div class="appearance-controls glass">
+          <div class="form-row">
+            <label>Свой фон:</label>
+            <div class="input-with-btn">
+              <input type="text" id="a-bgpath" class="text-input" readonly placeholder="Не выбрано" />
+              <button class="mini-btn" id="a-bgpick">Выбрать фото…</button>
+              <button class="mini-btn" id="a-bgclear" title="Убрать">&#10005;</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <label>Затемнение фона:</label>
+            <input type="range" id="a-dim" min="0" max="0.9" step="0.05" />
+          </div>
+          <div class="form-row">
+            <label>Размытие фона:</label>
+            <input type="range" id="a-blur" min="0" max="20" step="1" />
+          </div>
+          <div class="form-row">
+            <label>Акцентный цвет:</label>
+            <div class="accent-row" id="accent-row"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Меню из панели -->
+  <div class="menu-popup glass" id="menu-popup" hidden>
+    <button data-nav="settings">Настройки лаунчера и игры</button>
+    <button data-nav="versions">Менеджер версий</button>
+    <button data-nav="appearance">Внешний вид</button>
+    <button data-nav="about" class="menu-about">О программе</button>
+  </div>
+
+  <!-- Оверлей прогресса -->
+  <div class="progress-overlay" id="progress-overlay" hidden>
+    <div class="progress-card glass anim-rise">
+      <div class="progress-label" id="progress-label">Подготовка…</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-foot">
+        <span id="progress-percent">0%</span>
+        <button class="mini-btn" id="progress-cancel">Отменить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно -->
+  <div class="modal-overlay" id="modal-overlay" hidden>
+    <div class="modal glass anim-rise" id="modal"></div>
+  </div>
+
+  <div class="toast-container" id="toasts"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

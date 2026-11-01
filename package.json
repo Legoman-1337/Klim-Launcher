@@ -1,0 +1,26 @@
+{
+  "name": "klim-launcher",
+  "productName": "Klim Launcher",
+  "version": "1.0.0",
+  "description": "Klim — Minecraft launcher",
+  "main": "src/main/main.js",
+  "author": "Klim",
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env KLIM_EDITION=full electron .",
+    "start:full": "cross-env KLIM_EDITION=full electron .",
+    "start:lite": "cross-env KLIM_EDITION=lite electron .",
+    "build:icon": "electron tools/icon-gen.js",
+    "build:full": "cross-env KLIM_EDITION=full electron-builder --win --config electron-builder.js",
+    "build:lite": "cross-env KLIM_EDITION=lite electron-builder --win --config electron-builder.js"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^2.1.8"
+  },
+  "dependencies": {
+    "extract-zip": "^2.0.1"
+  }
+}

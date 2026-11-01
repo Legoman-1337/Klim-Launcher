@@ -1,0 +1,20 @@
+# Node / сборка
+node_modules/
+dist/
+*.blockmap
+
+# Тестовая папка игры
+test-game/
+
+# Dev-артефакты
+build/builder*.log
+build/shot*.png
+build/game-raw.log
+build/launch-full.log
+*.klim-part
+
+# Система
+Thumbs.db
+.DS_Store
+.zcode/
+build/repo.json

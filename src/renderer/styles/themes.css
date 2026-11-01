@@ -1,0 +1,77 @@
+/* Темы фона Klim Launcher */
+
+/* neon — фирменная: тёмно-фиолетовая сфера с малиновым свечением (по мотивам обоев по умолчанию) */
+.bg-theme.theme-neon {
+  background:
+    radial-gradient(ellipse 90% 60% at 50% 118%, rgba(255,120,60,.55), rgba(255,60,90,.25) 40%, transparent 70%),
+    radial-gradient(circle 46vmax at 50% 78%, #ff7a3c 0%, #ff3d7f 12%, #c233ff 30%, #6b2bd6 48%, #2a1560 68%, transparent 78%),
+    radial-gradient(circle 60vmax at 50% 85%, rgba(120,50,220,.5), transparent 70%),
+    radial-gradient(circle 30vmax at 12% 18%, rgba(90,40,180,.35), transparent 60%),
+    radial-gradient(circle 26vmax at 88% 12%, rgba(50,20,110,.4), transparent 60%),
+    linear-gradient(180deg, #17092e 0%, #0d0716 60%, #120620 100%);
+}
+.bg-theme.theme-neon::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(1.5px 1.5px at 12% 20%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1px 1px at 30% 8%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1.5px 1.5px at 76% 14%, rgba(255,255,255,.35), transparent),
+    radial-gradient(1px 1px at 90% 30%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1px 1px at 8% 46%, rgba(255,255,255,.3), transparent),
+    radial-gradient(1.5px 1.5px at 60% 6%, rgba(255,255,255,.3), transparent);
+}
+
+/* grid — неоновая сетка в перспективе */
+.bg-theme.theme-grid {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(176,73,255,.28), transparent 70%),
+    linear-gradient(180deg, #0b0714 0%, #120b22 55%, #1d0f38 100%);
+}
+.bg-theme.theme-grid::before {
+  content: ''; position: absolute; inset: 55% -20% -20%;
+  background:
+    repeating-linear-gradient(90deg, rgba(176,73,255,.25) 0 1px, transparent 1px 70px),
+    repeating-linear-gradient(0deg, rgba(255,78,205,.2) 0 1px, transparent 1px 44px);
+  transform: perspective(340px) rotateX(58deg) scale(1.4);
+  transform-origin: top center;
+  mask-image: linear-gradient(transparent, #000 30%);
+  animation: gridMove 14s linear infinite;
+}
+.bg-theme.theme-grid::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 52%;
+  height: 3px; background: linear-gradient(90deg, transparent, var(--accent, #b049ff), transparent);
+  filter: blur(1px) drop-shadow(0 0 8px rgba(176,73,255,.8));
+}
+
+/* aurora — полярное сияние */
+.bg-theme.theme-aurora {
+  background:
+    radial-gradient(ellipse 50% 34% at 22% 26%, rgba(46,224,180,.24), transparent 70%),
+    radial-gradient(ellipse 44% 40% at 74% 18%, rgba(108,120,255,.28), transparent 70%),
+    radial-gradient(ellipse 60% 44% at 56% 64%, rgba(176,73,255,.2), transparent 72%),
+    linear-gradient(160deg, #07101c 0%, #0c0a1e 55%, #131033 100%);
+  background-size: 200% 200%;
+  animation: auroraDrift 26s ease-in-out infinite alternate;
+}
+
+/* midnight — строгий тёмный градиент */
+.bg-theme.theme-midnight {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(80,60,140,.35), transparent 70%),
+    linear-gradient(180deg, #101018 0%, #0a0a10 100%);
+}
+
+/* Миниатюры тем в галерее */
+.theme-thumb-neon { background:
+  radial-gradient(circle 75% at 50% 115%, #ff7a3c 0%, #ff3d7f 22%, #c233ff 45%, #6b2bd6 68%, transparent 85%),
+  linear-gradient(180deg, #17092e, #0d0716); }
+.theme-thumb-grid { background:
+  radial-gradient(ellipse 80% 50% at 50% 100%, rgba(176,73,255,.35), transparent 70%),
+  linear-gradient(180deg, #0b0714, #1d0f38); }
+.theme-thumb-aurora { background:
+  radial-gradient(ellipse 50% 40% at 25% 30%, rgba(46,224,180,.4), transparent 70%),
+  radial-gradient(ellipse 50% 40% at 75% 25%, rgba(108,120,255,.45), transparent 70%),
+  linear-gradient(160deg, #07101c, #131033); }
+.theme-thumb-midnight { background:
+  radial-gradient(ellipse 70% 45% at 50% -10%, rgba(80,60,140,.45), transparent 70%),
+  linear-gradient(180deg, #101018, #0a0a10); }

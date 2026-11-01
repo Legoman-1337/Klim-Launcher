@@ -1,0 +1,157 @@
+/* Анимации Klim Launcher */
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(24px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(-6px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes itemIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes appIntro {
+  from { opacity: 0; transform: scale(1.015); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  to { opacity: 0; transform: translateX(40px); }
+}
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+@keyframes gridMove {
+  from { background-position: 0 0; }
+  to { background-position: 0 44px; }
+}
+@keyframes auroraDrift {
+  from { background-position: 0% 0%; }
+  to { background-position: 100% 100%; }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 4px 24px var(--accent-glow); }
+  50% { box-shadow: 0 4px 44px var(--accent-glow), 0 0 70px var(--accent-glow); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Живой фон ---------- */
+
+/* Медленно дрейфующие неоновые орбы */
+.bg-orbs { position: absolute; inset: -20%; pointer-events: none; }
+.bg-orbs i {
+  position: absolute; display: block; border-radius: 50%;
+  filter: blur(70px); opacity: .35; will-change: transform;
+}
+.bg-orbs i:nth-child(1) {
+  width: 44vmax; height: 44vmax; left: -8%; top: -12%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 70%, transparent), transparent 70%);
+  animation: orbFloat1 38s ease-in-out infinite alternate;
+}
+.bg-orbs i:nth-child(2) {
+  width: 36vmax; height: 36vmax; right: -6%; top: 30%;
+  background: radial-gradient(circle, rgba(255, 78, 205, .5), transparent 70%);
+  animation: orbFloat2 46s ease-in-out infinite alternate;
+}
+.bg-orbs i:nth-child(3) {
+  width: 30vmax; height: 30vmax; left: 30%; bottom: -16%;
+  background: radial-gradient(circle, rgba(80, 120, 255, .4), transparent 70%);
+  animation: orbFloat3 52s ease-in-out infinite alternate;
+}
+@keyframes orbFloat1 {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(9vmax, 6vmax) scale(1.15); }
+}
+@keyframes orbFloat2 {
+  from { transform: translate(0, 0) scale(1.1); }
+  to { transform: translate(-7vmax, -5vmax) scale(.95); }
+}
+@keyframes orbFloat3 {
+  from { transform: translate(0, 0) scale(.9); }
+  to { transform: translate(6vmax, -7vmax) scale(1.12); }
+}
+
+/* Частицы-«звёзды» на canvas */
+.bg-particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+body.has-custom-bg .bg-orbs,
+body.has-custom-bg .bg-particles { display: none; }
+
+/* Лёгкое дыхание фирменной сферы */
+.bg-theme.theme-neon { animation: sphereBreath 9s ease-in-out infinite; }
+@keyframes sphereBreath {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.12); }
+}
+
+/* ---------- Элементы ---------- */
+
+.anim-rise { animation: riseIn .45s cubic-bezier(.2,.8,.25,1); }
+.anim-item { animation: itemIn .35s cubic-bezier(.2,.8,.25,1) backwards; }
+
+/* Вход окна */
+body { animation: appIntro .5s cubic-bezier(.2,.8,.25,1); }
+
+/* Логотип: неоновое мерцание */
+.logo-k { animation: logoGlow 4s ease-in-out infinite; }
+@keyframes logoGlow {
+  0%, 100% { filter: drop-shadow(0 0 5px var(--accent-glow)) brightness(1); }
+  50% { filter: drop-shadow(0 0 14px var(--accent-glow)) brightness(1.2); }
+}
+
+/* Пульсация кнопки запуска, когда всё готово */
+.play-btn.ready { animation: pulseGlow 2.6s ease-in-out infinite; }
+
+/* Спиннер на кнопке запуска */
+.play-btn.loading { pointer-events: none; filter: saturate(.8); }
+.play-btn.loading .spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2.5px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: -3px;
+  animation: spin .8s linear infinite;
+}
+
+/* Ripple */
+.ripple {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255,255,255,.45), rgba(255,255,255,0) 70%);
+  transform: scale(0);
+  animation: rippleOut .55s ease-out forwards;
+}
+@keyframes rippleOut {
+  to { transform: scale(2.6); opacity: 0; }
+}
+
+/* Параллакс фона за курсором */
+.bg .bg-theme, .bg .bg-custom, .bg .bg-orbs { transition: transform .3s ease-out; will-change: transform; }
+
+/* Вкладки: анимация при переключении */
+.tab-page { animation: pageIn .25s ease; }
+
+/* Hover-подсветка иконок панели */
+.icon-btn { position: relative; overflow: hidden; }
+
+/* Наклон карточек */
+.card.tilt { transition: transform .12s ease-out, border-color .2s, box-shadow .2s; }
+
+/* Отключение анимаций из настроек */
+body.no-animations *, body.no-animations *::before, body.no-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+body.no-animations .bg-orbs, body.no-animations .bg-particles { display: none !important; }
