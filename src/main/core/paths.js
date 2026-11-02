@@ -20,7 +20,7 @@ class Paths {
     await ensureDir(this.game);
     await Promise.all([
       ensureDir(this.versions()), ensureDir(this.libraries()), ensureDir(this.assets()),
-      ensureDir(this.mods()), ensureDir(this.jres()), ensureDir(this.screenshots()),
+      ensureDir(this.mods()), ensureDir(this.resourcepacks()), ensureDir(this.jres()), ensureDir(this.screenshots()),
     ]);
   }
 
@@ -34,6 +34,7 @@ class Paths {
   assetIndex(name) { return path.join(this.assets(), 'indexes', name + '.json'); }
   virtualAssets(name) { return path.join(this.assets(), 'virtual', name); }
   mods() { return path.join(this.game, 'mods'); }
+  resourcepacks() { return path.join(this.game, 'resourcepacks'); }
   screenshots() { return path.join(this.game, 'screenshots'); }
   jres() { return path.join(this.game, 'jre'); }
   jreDir(feature) { return path.join(this.jres(), 'java-runtime-' + feature); }

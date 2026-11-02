@@ -136,6 +136,41 @@ async function prepareLaunch(opts) {
   await ensureDir(workDir);
   for (const sub of ['resourcepacks', 'screenshots', 'logs']) await ensureDir(path.join(workDir, sub));
 
+  // Моды и ресурспаки — всегда общие, в корне папки игры лаунчера.
+  // При раздельных подпапках делаем junction-ссылки на корневые mods/resourcepacks
+  // (работают на Windows без прав администратора).
+  if (cfg.subfoldersPerVersion) {
+    const shared = [
+      ['mods', paths.mods()],
+      ['resourcepacks', path.join(gameDir, 'resourcepacks')],
+    ];
+    for (const [name, target] of shared) {
+      await ensureDir(target);
+      const link = path.join(workDir, name);
+      try {
+        const st = await fsp.lstat(link).catch(() => null);
+        if (!st) {
+          await fsp.symlink(target, link, 'junction');
+        } else if (!st.isSymbolicLink()) {
+          // Старая локальная папка: переносим содержимое в общую, потом заменяем ссылкой
+          const entries = await fsp.readdir(link).catch(() => []);
+          if (entries.length) {
+            for (const e of entries) {
+              const dest = path.join(target, e);
+              if (!(await exists(dest))) {
+                await fsp.rename(path.join(link, e), dest).catch(async () => {
+                  await fsp.cp(path.join(link, e), dest, { recursive: true }).catch(() => {});
+                });
+              }
+            }
+          }
+          await fsp.rm(link, { recursive: true, force: true });
+          await fsp.symlink(target, link, 'junction');
+        }
+      } catch { /* не удалось создать ссылку — игра использует локальную папку */ }
+    }
+  }
+
   const assetsRoot = paths.assets();
   const isLegacyAssets = merged.assets === 'legacy' || merged.assets === 'pre-1.6';
   const gameAssets = isLegacyAssets ? paths.virtualAssets(merged.assets) : undefined;
@@ -239,6 +274,7 @@ async function launchGame(opts) {
   });
 
   progress({ phase: 'launch', label: 'Игра запущена', percent: 1 });
+  taskState({ kind: 'launch', state: 'done' });
   return { pid: child.pid, memMb: prepared.memMb, javaPath: prepared.javaPath, workDir: prepared.workDir };
 }
 

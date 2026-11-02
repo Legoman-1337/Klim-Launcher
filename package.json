@@ -1,7 +1,7 @@
 {
   "name": "klim-launcher",
   "productName": "Klim Launcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Klim — Minecraft launcher",
   "main": "src/main/main.js",
   "author": "Klim",

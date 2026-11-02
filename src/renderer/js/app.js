@@ -13,6 +13,7 @@ const state = {
   loaderOptions: [],
   selectedLoader: null,   // {kind, id, label}
   playReady: false,
+  playing: false,
   launching: false,
 };
 
@@ -428,7 +429,7 @@ $('#chk-refresh').onchange = (e) => klim.settings.set({ refreshClient: e.target.
 
 /* ---------- Запуск ---------- */
 $('#btn-play').onclick = async () => {
-  if (state.launching) return;
+  if (state.launching || state.playing) return;
   const account = state.cfg.accounts.selected;
   if (!account) { toast('Сначала добавь ник', 'error'); $('#account-toggle').click(); return; }
   if (!state.selectedMc) { toast('Не выбрана версия', 'error'); return; }
@@ -477,9 +478,12 @@ async function doLaunch(versionId) {
     }
   } finally {
     state.launching = false;
-    btn.disabled = false;
-    btn.classList.remove('loading');
-    btn.innerHTML = '<span>Запустить</span>';
+    // Если игра уже заспавнилась (task 'launch done'), кнопку не трогаем — там своё состояние
+    if (!state.playing) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      btn.innerHTML = '<span>Запустить</span>';
+    }
   }
 }
 
@@ -501,25 +505,56 @@ klim.on('task', (t) => {
   if (!t) return;
   if (t.kind === 'install') {
     if (t.state === 'done') {
-      $('#progress-overlay').hidden = true;
-      progressVisible = false;
+      hideProgress();
       toast('Версия установлена', 'ok');
       refreshInstalled();
       if ($('#page-versions').hidden === false) renderVersionsPage();
     } else if (t.state === 'error') {
-      $('#progress-overlay').hidden = true;
-      progressVisible = false;
+      hideProgress();
       toast('Ошибка установки: ' + t.message, 'error');
     }
   }
   if (t.kind === 'launch' && t.state === 'start') {
     $('#progress-label').textContent = 'Запуск игры…';
   }
+  // Игра заспавнена — прячем прогресс и переводим кнопку в состояние «в игре»
+  if (t.kind === 'launch' && t.state === 'done') {
+    hideProgress();
+    setPlaying(true);
+  }
   if (t.kind === 'game') {
-    if (t.state === 'exit') toast(t.code === 0 ? 'Игра закрыта' : `Игра завершилась (код ${t.code})`, t.code === 0 ? '' : 'error');
-    if (t.state === 'error') toast(t.message, 'error');
+    if (t.state === 'exit') {
+      hideProgress();
+      setPlaying(false);
+      toast(t.code === 0 ? 'Игра закрыта' : `Игра завершилась (код ${t.code})`, t.code === 0 ? '' : 'error');
+    }
+    if (t.state === 'error') {
+      hideProgress();
+      setPlaying(false);
+      toast(t.message, 'error');
+    }
   }
 });
+
+/* Оверлей прогресса и состояние «игра идёт» */
+function hideProgress() {
+  progressVisible = false;
+  $('#progress-overlay').hidden = true;
+}
+
+function setPlaying(on) {
+  state.playing = on;
+  const btn = $('#btn-play');
+  if (!btn) return;
+  if (on) {
+    btn.disabled = true;
+    btn.classList.remove('loading');
+    btn.innerHTML = '<span>Игра запущена</span>';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Запустить</span>';
+  }
+}
 klim.on('confirm:closeDuringInstall', () => {
   toast('Идёт установка. Отмени её перед закрытием лаунчера.', 'error');
 });

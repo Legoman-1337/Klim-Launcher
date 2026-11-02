@@ -238,6 +238,7 @@ function registerIpc() {
     const map = {
       root: paths.game,
       mods: paths.mods(),
+      resourcepacks: paths.resourcepacks(),
       screenshots: paths.screenshots(),
       versions: paths.versions(),
       logs: paths.logs(),
